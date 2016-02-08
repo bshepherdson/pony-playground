@@ -1,3 +1,4 @@
+use "collections"
 use "files"
 use "json"
 use "time"
@@ -40,15 +41,19 @@ primitive JsonLoader
 primitive PriceLoader
   fun deserialize_prices(fp: FilePath) : Array[Price] ? =>
     var prices = Array[Price]()
+    let records_per_block : USize = 16
+    let record_size : USize = 7
     with f = OpenFile(fp) as File do
-      let bytes = f.read(4 * 7 * 16)
-      // START HERE: Reading the binary file.
-
-
-      f.line() // Skip the first line, with the headings
-      while true do
-        try prices.push(Price.from_csv_row(f.line()))
-        else break end
+      let size = f.size()
+      prices.reserve(size / (record_size * 4))
+      let contents = @mmap[Pointer[U32]](USize(0), size,
+          U32(1) /* PROT_READ */, U32(2) /* MAP_PRIVATE */, f.get_fd(),
+          USize(0) /* offset */)
+      let words = Array[U32].from_cstring(contents, size / 4)
+      var i : USize = 0
+      while i < words.size() do
+        prices.push(Price.from_binary(words, i))
+        i = i + record_size
       end
     end
     prices

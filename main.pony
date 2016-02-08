@@ -1,3 +1,4 @@
+use "collections"
 use "files"
 
 actor Main
@@ -11,6 +12,11 @@ actor Main
       let commodities = JsonLoader.deserialize_file[Commodity](
           FilePath(env.root, "data/commodities.json", caps))
       let prices = PriceLoader.deserialize_prices(
-          FilePath(env.root, "data/listings.csv", caps))
+          FilePath(env.root, "data/listings.bin", caps))
+
+      env.out.print("Data loaded: " + systems.size().string() +
+          " systems containing " + stations.size().string() +
+          " stations selling " + commodities.size().string() +
+          " commodities at " + prices.size().string() + " prices.")
     end
 
