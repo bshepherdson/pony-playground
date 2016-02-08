@@ -2,7 +2,7 @@ use "json"
 use "time"
 
 class System is FromJSON
-  let id: I64
+  let id: U32
   let name: String
   let x: F64
   let y: F64
@@ -19,7 +19,7 @@ class System is FromJSON
   let updated_at: Date
 
   new from_json(obj: JsonObject) =>
-    id = try obj.data("id") as I64 else 0 end
+    id = try (obj.data("id") as I64).u32() else 0 end
     name = try obj.data("name") as String else "BAD PARSE" end
 
     x = try obj.data("x") as F64 else 0 end

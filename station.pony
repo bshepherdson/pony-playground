@@ -3,12 +3,12 @@ use "json"
 use "time"
 
 class Station is FromJSON
-  let id: I64
+  let id: U32
   let name: String
-  let system_id: I64
+  let system_id: U32
   let landing_pad_size: String
 
-  let distance_to_star: I64 // Ls
+  let distance_to_star: U32 // Ls
   let faction: String
   let government: String
   let allegiance: String
@@ -27,12 +27,12 @@ class Station is FromJSON
   let market_updated_at: Date
 
   new from_json(obj: JsonObject) =>
-    id = try obj.data("id") as I64 else 0 end
+    id = try (obj.data("id") as I64).u32() else 0 end
     name = try obj.data("name") as String else "BAD PARSE" end
-    system_id = try obj.data("system_id") as I64 else 0 end
+    system_id = try (obj.data("system_id") as I64).u32() else 0 end
     landing_pad_size = try obj.data("landing_pad_size") as String else "BAD PARSE" end
 
-    distance_to_star = try obj.data("distance_to_star") as I64 else 0 end
+    distance_to_star = try (obj.data("distance_to_star") as I64).u32() else 0 end
     faction = try obj.data("faction") as String else "BAD PARSE" end
     government = try obj.data("government") as String else "BAD PARSE" end
     allegiance = try obj.data("allegiance") as String else "BAD PARSE" end

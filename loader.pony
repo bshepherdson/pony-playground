@@ -1,11 +1,12 @@
 use "files"
 use "json"
+use "time"
 
 
 interface FromJSON
   new from_json(obj: JsonObject)
 
-primitive DataLoader
+primitive JsonLoader
   fun deserialize_file[A: FromJSON ref](fp : FilePath) : Array[A] =>
     """Reads a JSON file containing an array, and converts each to an A."""
     try
@@ -35,4 +36,20 @@ primitive DataLoader
     end
     out
 
+
+primitive PriceLoader
+  fun deserialize_prices(fp: FilePath) : Array[Price] ? =>
+    var prices = Array[Price]()
+    with f = OpenFile(fp) as File do
+      let bytes = f.read(4 * 7 * 16)
+      // START HERE: Reading the binary file.
+
+
+      f.line() // Skip the first line, with the headings
+      while true do
+        try prices.push(Price.from_csv_row(f.line()))
+        else break end
+      end
+    end
+    prices
 
