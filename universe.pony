@@ -15,7 +15,7 @@ class val Universe
   let stationsById : Map[U32, Station val] val
   let stationsByName : Map[String, Station val] val
 
-  new create(st : Array[Station val] val, sy : Array[System val] val,
+  new val create(st : Array[Station val] val, sy : Array[System val] val,
       cs : Array[Commodity val] val, ps : Array[Price val] val) =>
     stations = st
     systems = sy
