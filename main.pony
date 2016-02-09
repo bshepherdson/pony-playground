@@ -3,6 +3,8 @@ use "files"
 use "json"
 use "net"
 
+use "./handlers"
+
 actor Main
   new create(env: Env) =>
     let caps = recover val FileCaps.set(FileRead).set(FileStat) end
@@ -27,6 +29,7 @@ actor Main
       let routes = recover val
         var rts = Map[String, Handler tag]()
         rts("echo") = EchoHandler.create(env, universe)
+        rts("systems") = SystemsHandler.create(env, universe)
         rts
       end
       TCPListener.ip4(recover Listener(env, universe, routes) end)
@@ -118,16 +121,4 @@ interface Handler
   main processing of the request."""
   be handle(conn: TCPConnection tag, req: JsonObject val)
 
-
-actor EchoHandler is Handler
-  let _env: Env
-  let _universe: Universe
-
-  new create(env: Env, uni: Universe) =>
-    _env = env
-    _universe = uni
-
-  be handle(conn: TCPConnection tag, req: JsonObject val) =>
-    conn.write("server says: ")
-    conn.write(req.string())
 

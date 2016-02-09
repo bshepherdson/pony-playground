@@ -1,8 +1,9 @@
+use "collections"
 use "files"
 use "json"
 use "time"
 
-class Station is FromJSON
+class Station is (FromJSON & ToJSON)
   let id: U32
   let name: String
   let system_id: U32
@@ -49,4 +50,30 @@ class Station is FromJSON
 
     updated_at = Date(try obj.data("updated_at") as I64 else 0 end)
     market_updated_at = Date(try obj.data("updated_at") as I64 else 0 end)
+
+  fun as_map(): Map[String, JsonType] =>
+    var map = Map[String, JsonType]()
+    map("id") = id.i64()
+    map("name") = name
+    map("system_id") = system_id.i64()
+    map("landing_pad_size") = landing_pad_size
+
+    map("distance_to_star") = distance_to_star.i64()
+    map("faction") = faction
+    map("government") = government
+    map("allegiance") = allegiance
+    map("state") = state
+    map("is_planetary") = is_planetary
+
+    map("has_market") = has_market
+    map("has_refuel") = has_refuel
+    map("has_repair") = has_repair
+    map("has_rearm") = has_rearm
+    map("has_outfitting") = has_outfitting
+    map("has_shipyard") = has_shipyard
+    map("has_commodities") = has_commodities
+
+    map("updated_at") = updated_at.time()
+    map("market_updated_at") = market_updated_at.time()
+    map
 

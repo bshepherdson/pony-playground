@@ -14,6 +14,7 @@ class val Universe
   let systemsByName : Map[String, System val] val
   let stationsById : Map[U32, Station val] val
   let stationsByName : Map[String, Station val] val
+  let stationsBySystem : Map[U32, Array[Station val] val] val
 
   new val create(st : Array[Station val] val, sy : Array[System val] val,
       cs : Array[Commodity val] val, ps : Array[Price val] val) =>
@@ -43,13 +44,23 @@ class val Universe
       (byId, byName)
     end
 
-    (stationsById, stationsByName) = recover val
+    (stationsById, stationsByName, stationsBySystem) = recover val
       var byId = Map[U32, Station val]()
       var byName = Map[String, Station val]()
+      var bySystem = Map[U32, Array[Station val] trn]()
       for v in st.values() do
         byId(v.id) = v
         byName(v.name) = v
+        try
+          bySystem(v.system_id).push(v)
+        else
+          bySystem(v.system_id) = recover trn [v] end
+        end
       end
-      (byId, byName)
+      var bySystem' = Map[U32, Array[Station val] val]()
+      for k in bySystem.keys() do
+        try bySystem'(k) = bySystem.remove(k)._2 end
+      end
+      (byId, byName, bySystem')
     end
 

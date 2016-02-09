@@ -1,7 +1,8 @@
+use "collections"
 use "json"
 use "time"
 
-class System is FromJSON
+class System is (FromJSON & ToJSON)
   let id: U32
   let name: String
   let x: F64
@@ -35,4 +36,23 @@ class System is FromJSON
     needs_permit = try obj.data("needs_permit") as Bool else false end
 
     updated_at = Date(try obj.data("updated_at") as I64 else 0 end)
+
+  fun as_map() : Map[String, JsonType] =>
+    var map = Map[String, JsonType]()
+    map("id") = id.i64()
+    map("name") = name
+    map("x") = x
+    map("y") = y
+    map("z") = z
+
+    map("faction") = faction
+    map("government") = government
+    map("allegiance") = allegiance
+
+    map("power") = power
+    map("power_state") = power_state
+    map("needs_permit") = needs_permit
+
+    map("updated_at") = updated_at.time()
+    map
 

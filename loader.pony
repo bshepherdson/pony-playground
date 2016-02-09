@@ -7,6 +7,11 @@ use "time"
 interface FromJSON
   new val from_json(obj: JsonObject val)
 
+interface ToJSON
+  fun as_map() : Map[String, JsonType]
+  fun json() : JsonObject =>
+    JsonObject.from_map(as_map())
+
 primitive JsonLoader
   fun deserialize_file[A: FromJSON val](fp : FilePath) : Array[A] val =>
     """Reads a JSON file containing an array, and converts each to an A."""
