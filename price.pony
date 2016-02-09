@@ -1,6 +1,6 @@
 use "time"
 
-class Price
+class val Price
   let commodity_id: U32
   let station_id: U32
 
@@ -12,7 +12,7 @@ class Price
 
   let collected_at: Date
 
-  new from_csv_row(s: String) =>
+  new val from_csv_row(s: String) =>
     let parts = s.split(",")
     station_id   = try s(1).u32() else 0 end
     commodity_id = try s(2).u32() else 0 end
@@ -22,7 +22,7 @@ class Price
     demand       = try s(6).u32() else 0 end
     collected_at = Date(try s(7).i64() else 0 end)
 
-  new from_binary(arr: Array[U32], index: USize) =>
+  new val from_binary(arr: Array[U32] val, index: USize) =>
     station_id   = try arr(index)     else 0 end
     commodity_id = try arr(index + 1) else 0 end
     supply       = try arr(index + 2) else 0 end

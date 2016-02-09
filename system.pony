@@ -18,7 +18,7 @@ class System is FromJSON
 
   let updated_at: Date
 
-  new from_json(obj: JsonObject) =>
+  new val from_json(obj: JsonObject val) =>
     id = try (obj.data("id") as I64).u32() else 0 end
     name = try obj.data("name") as String else "BAD PARSE" end
 
