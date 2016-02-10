@@ -5,6 +5,10 @@ use "net"
 
 use "./handlers"
 
+// DEBUG
+use "debug"
+use "time"
+
 actor Main
   new create(env: Env) =>
     let caps = recover val FileCaps.set(FileRead).set(FileStat) end
@@ -79,6 +83,7 @@ class Server is TCPConnectionNotify
 
   fun ref received(conn: TCPConnection ref, data: Array[U8] iso) =>
     // Read the data as a JSON object.
+    let start = Time.now()
     let s : String val = recover val
       var r : String ref = String()
       r.append(consume data)
@@ -99,12 +104,18 @@ class Server is TCPConnectionNotify
         end
       end
     end
+    let done = Time.now()
+    Debug("JSON receive and parse time: " + (done._1 - start._1).string() +
+    " seconds and " + (done._2 - start._2).string() + " nanos")
 
     try
       match msg
       | let m : JsonObject val =>
         let request = m.data("request") as String
+        let t = Time.now()
         _routes(request).handle(conn, m)
+        _env.out.print("Request launched at " + t._1.string() +
+            " seconds and " + t._2.string() + " nanos")
       else error end
     else
       conn.write("""{ "error": "Request was not valid JSON" }""")
